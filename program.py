@@ -104,7 +104,7 @@ class Usual_algorithm(Base_algorithm):
                     for j in range(len(containers)):
                         if item[0] + containers[j] <= self.M:
                             containers[j] = containers[j] + item[0]
-                            nbmrs_in_cntrs[j].append(item[1] + 1)
+                            nbmrs_in_cntrs[j].append(item[1])
                             flag = True
                             break
                     if flag == False:
