@@ -295,7 +295,7 @@ if __name__ == "__main__":
         
         
         for container in containers:
-            print("Контейнеров использовано " + str(len(container))
+            print("Контейнеров использовано " + str(len(container)))
             print("Контейнеры: ")
             print(container)
             print("\n///\n")
