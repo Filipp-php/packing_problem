@@ -33,7 +33,7 @@ class BFS_algorithm(Base_algorithm):
             swapped = False
             x = x + 1
             for i in range(1, n-x):
-                if self.items[i-1][0] > self.items[i][0]:
+                if self.items[i-1][0] < self.items[i][0]:
                     swap(i - 1, i)
                     swapped = True
 
@@ -46,24 +46,24 @@ class BFS_algorithm(Base_algorithm):
             if len(containers) == 0:
                 containers.append(item[0])
                 nbmrs_in_cntrs[key] = []
-                nbmrs_in_cntrs[key].append(item[1])
+                nbmrs_in_cntrs[key].append(item[1]+1)
                 key = key + 1
             else:
-                best_id = 0
-                best_cntr = containers[0]
+                best_diff = math.inf #исправленная строка
                 for j in range(len(containers)):
-                    if item[0] + containers[j] <= self.M and self.M - best_cntr < self.M - containers[j]:
+                    if item[0] + containers[j] <= self.M and best_diff > self.M - containers[j]:  #исправленная строка
                         best_id = j
                         best_cntr = containers[j]
+                        best_diff = self.M - containers[j]  #исправленная строка
                         
-                if best_id == 0 and item[0] + containers[j] > self.M:
+                if best_diff == math.inf:  #исправленная строка
                     containers.append(item[0])
                     nbmrs_in_cntrs[key] = []
-                    nbmrs_in_cntrs[key].append(item[1])
+                    nbmrs_in_cntrs[key].append(item[1]+1)
                     key = key + 1  
                 else:
                     containers[best_id] = containers[best_id] + item[0]
-                    nbmrs_in_cntrs[best_id].append(item[1])
+                    nbmrs_in_cntrs[best_id].append(item[1]+1)
         return nbmrs_in_cntrs
 
 class Usual_algorithm(Base_algorithm):
@@ -97,20 +97,20 @@ class Usual_algorithm(Base_algorithm):
                 if len(containers) == 0:
                     containers.append(item[0])
                     nbmrs_in_cntrs[key] = []
-                    nbmrs_in_cntrs[key].append(item[1])
+                    nbmrs_in_cntrs[key].append(item[1]+1)
                     key = key + 1
                 else:
                     flag = False
                     for j in range(len(containers)):
                         if item[0] + containers[j] <= self.M:
                             containers[j] = containers[j] + item[0]
-                            nbmrs_in_cntrs[j].append(item[1])
+                            nbmrs_in_cntrs[j].append(item[1]+1)
                             flag = True
                             break
                     if flag == False:
                         containers.append(item[0])
                         nbmrs_in_cntrs[key] = []
-                        nbmrs_in_cntrs[key].append(item[1])
+                        nbmrs_in_cntrs[key].append(item[1]+1)
                         key = key + 1
             best_q = len(best_case)
             if best_q == 0:
@@ -162,10 +162,11 @@ class FF_algorithm():
 
 def generation(q = 5): #q - кол-во тестов
     import time
-    N = [3, 5, 7, 9]
+    N = [3, 4, 5, 6]
     for_exel = { 
                   'Объем входных данных': [], 
-                  'Название алгоритма': [],
+                  'Количество тестов в серии': [],
+                  'Название алгоритма': [],                  
                   'Время работы алгоритма' : [],
                   'Процент тестов...' : [],
                   'Среднее относительное отклонение' : [],
@@ -175,6 +176,9 @@ def generation(q = 5): #q - кол-во тестов
         for_exel['Объем входных данных'].append(n)
         for_exel['Объем входных данных'].append(n)
         for_exel['Объем входных данных'].append(n)
+        for_exel['Количество тестов в серии'].append(q)
+        for_exel['Количество тестов в серии'].append(q)
+        for_exel['Количество тестов в серии'].append(q)
         for_exel['Название алгоритма'].append('Переборный')
         for_exel['Название алгоритма'].append('FF')
         for_exel['Название алгоритма'].append('BFS')
@@ -198,9 +202,9 @@ def generation(q = 5): #q - кол-во тестов
             M = random.randint(5, 10)
             items = []
             for j in range(n):
-                items.append(random.randint(1, M))
+                #items.append(random.randint(1, M))
                 #items.append(M)
-                #items.append(1)
+                items.append(1)
 
             print("\n Test " + str(i+1))
             print("  M = " + str(M))
@@ -264,7 +268,10 @@ def generation(q = 5): #q - кол-во тестов
         for_exel['Среднее относительное отклонение'].append(bfs['Отклонение'] / q)
         
     df = pd.DataFrame(for_exel)
-    df.to_excel('./exp.xlsx', sheet_name='FfF', index=False)
+    #df.to_excel('./exp.xlsx', sheet_name='FfF', index=False)
+    #df.to_excel('./exp_worst.xlsx', sheet_name='FfF', index=False)
+    df.to_excel('./exp_best.xlsx', sheet_name='FfF', index=False)
+    
 
 
 if __name__ == "__main__":
